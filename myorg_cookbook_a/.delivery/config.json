@@ -1,0 +1,23 @@
+{
+  "version": "2",
+  "job_dispatch": {
+      "version": "v2"
+   },
+  "build_cookbook": {
+     "name": "myorg_build_cookbook",
+     "supermarket": "true",
+     "site": "https://supermarket.myorg.com/"
+  },
+  "myorg_build_cookbook": {
+    "user": "dummy",
+    "run_recipe": "myorg_cookbook_a::default"
+  },
+  "skip_phases": ["functional", "lint", "unit"],
+  "build_nodes": {},
+  "delivery-truck": {
+    "publish": {
+      "chef_server": true
+    }
+  },
+  "dependencies": []
+}

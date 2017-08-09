@@ -1,0 +1,60 @@
+--
+# this template expects ENV varibles to be configured on the build runner
+# and attributes to be specified in .delivery/config.json
+driver:
+  name: ec2
+  region: <%= ENV['REGION'] %>
+  availability_zone: <%= ENV['AZ'] %>
+  security_group_ids: ["<%= ENV['SECGRP'] %>"]
+  subnet_id: <%= ENV['SUBNET'] %>
+  iam_profile_name: <%= ENV['IAMPROFILE'] %>
+  instance_type: t2.medium
+  associate_public_ip: false
+  vpc_mode: true
+  vpc: <%= ENV['VPC'] %>
+  tags:
+    Name: "<%= ENV['RUSER'] %>_testserver"
+    Role: TestWorkflow
+
+provisioner:
+  name: chef_zero
+  require_chef_omnibus: false
+  chef_client_path: 'chef-client'
+
+transport:
+  # for either ssh or winrm
+  connection_retries: 3
+  connection_retry_sleep: 5 # sleep between retries
+  max_wait_until_ready: 7200 # wait for instance to complete provisioning
+  username: test
+  # ssh
+  connection_timeout: 1800 # 30
+  max_ssh_sessions: 1
+  ssh_key: <%= File.join(ENV['USERPROFILE'], ".ssh", "id_test") %>
+  # winrm
+  elevated: false
+
+platforms:
+  - name: rhel-7
+    driver:
+      image_id: ami-77777777
+  - name: rhel-6
+    driver:
+      image_id: ami-66666666
+
+verifier:
+  name: inspec
+
+suites:
+  - name: default
+    run_list:
+      - recipe[<%= node['delivery']['config']['myorg_build_cookbook']['run_recipe']%>]
+    verifier:
+      name: inspec
+      inspec_tests:
+        - test/integration/default
+    attributes:
+      chef_client:
+        config:
+          log_level: ":debug"
+          ssl_verify_mode: ":verify_none"
