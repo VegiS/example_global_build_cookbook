@@ -6,8 +6,9 @@ Pattern B gives more control at the individual repo and Pattern B moves that con
 
 Both patterns set values in .delivery/config.json that can then be consumed by the build_cookbook. See the following files
 
-myorg_build_cookbook/recipes/functional.rb
-myorg_build_cookbook/templates/.kitchen.ec2.yml.erb
+`myorg_build_cookbook/recipes/functional.rb`
+
+`myorg_build_cookbook/templates/.kitchen.ec2.yml.erb`
 
 ## Pattern A: 1 to rule them all
 
